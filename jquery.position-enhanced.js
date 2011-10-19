@@ -103,6 +103,9 @@ Changelog:
 			return null;
 		}
 		
+		// bail out on Webkit otherwise we double up
+		if (thisStyle.WebkitTransition !== undefined) return originalPositionMethod.call(this);
+		
 		var position = originalPositionMethod.call(this),
 			translation = getTranslation.call(this);
 			
