@@ -15,6 +15,10 @@ Use it in exactly the same way as you would $.position() - http://api.jquery.com
 Changelog
 -----------------
 
+0.11 (04/11/2011):
+
+* IE Fixes
+
 0.10 (19/10/2011):
 
 * Plugin released.

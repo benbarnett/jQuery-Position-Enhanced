@@ -1,5 +1,5 @@
 /*
-jquery.position-enhanced plugin v0.10
+jquery.position-enhanced plugin v0.11
 ---
 http://github.com/benbarnett/jQuery-Position-Enhanced
 http://benbarnett.net
@@ -35,11 +35,14 @@ Usage (exactly the same as it would be normally):
 	jQuery(element).position();
 	
 Changelog:
+	0.11 (04/11/2011):
+		- IE Fixes
+
 	0.10 (19/10/2011):
 		- Plugin created
 */
 
-(function(jQuery, originalPositionMethod) {
+(function(jQuery, originalPositionMethod, originalOffsetMethod) {
 
 	// ----------
 	// Plugin variables
@@ -103,8 +106,8 @@ Changelog:
 			return null;
 		}
 		
-		// bail out on Webkit otherwise we double up
-		if (thisStyle.WebkitTransition !== undefined) return originalPositionMethod.call(this);
+		// bail out on Webkit/IE otherwise we double up
+		if (!cssTransitionsSupported || thisStyle.WebkitTransition !== undefined) return originalPositionMethod.call(this);
 		
 		var position = originalPositionMethod.call(this),
 			translation = getTranslation.call(this);
@@ -115,4 +118,27 @@ Changelog:
 		} : null;
 	};
 	
-})(jQuery, jQuery.fn.position);
+	/**
+		@private
+		@name jQuery.position
+		@function
+		@description Extended position() method to include CSS3 translations
+	*/
+	jQuery.fn.offset = function() {
+		if (!this[0]) {
+			return null;
+		}
+		
+		// bail out on Webkit otherwise we double up
+		if (!cssTransitionsSupported || thisStyle.WebkitTransition !== undefined) return originalOffsetMethod.call(this);
+		
+		var position = originalOffsetMethod.call(this),
+			translation = getTranslation.call(this);
+			
+		return (position) ? {
+			left: position.left + translation.left,
+			top: position.top + translation.top
+		} : null;
+	};
+	
+})(jQuery, jQuery.fn.position, jQuery.fn.offset);
