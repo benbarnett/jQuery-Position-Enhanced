@@ -31,9 +31,9 @@ Tested with jQuery 1.3.2+
 Supports -moz-transition, -webkit-transition, -o-transition, transition
 
 Usage (exactly the same as it would be normally):
-	
+
 	jQuery(element).position();
-	
+
 Changelog:
 	0.11 (04/11/2011):
 		- IE Fixes
@@ -48,18 +48,18 @@ Changelog:
 	// Plugin variables
 	// ----------
 	var	cssPrefixes = ["", "-webkit-", "-moz-", "-o-"];
-		
-	
+
+
 	// ----------
 	// Check if this browser supports CSS3 transitions
 	// ----------
 	var thisBody = document.body || document.documentElement,
-   		thisStyle = thisBody.style,
+		thisStyle = thisBody.style,
 		transitionEndEvent = (thisStyle.WebkitTransition !== undefined) ? "webkitTransitionEnd" : (thisStyle.OTransition !== undefined) ? "oTransitionEnd" : "transitionend",
 		cssTransitionsSupported = thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.OTransition !== undefined || thisStyle.transition !== undefined,
 		has3D = use3DByDefault = ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix());
-		
-	
+
+
 	/**
 		@private
 		@name translation
@@ -77,7 +77,7 @@ Changelog:
 				left: 0,
 				top: 0
 			};
-			
+
 		for (var i = cssPrefixes.length - 1; i >= 0; i--){
 			var transform = cStyle.getPropertyValue(cssPrefixes[i] + "transform");
 			if (transform && (/matrix/i).test(transform)) {
@@ -86,15 +86,14 @@ Changelog:
 					left: parseInt(explodedMatrix[4], 10),
 					top: parseInt(explodedMatrix[5], 10)
 				};
-				
+
 				break;
 			}
 		}
-		
+
 		return translation;
-	};
-	
-	
+	}
+
 	/**
 		@private
 		@name jQuery.position
@@ -105,40 +104,40 @@ Changelog:
 		if (!this[0]) {
 			return null;
 		}
-		
+
 		// bail out on Webkit/IE otherwise we double up
-		if (!cssTransitionsSupported || thisStyle.WebkitTransition !== undefined) return originalPositionMethod.call(this);
-		
-		var position = originalPositionMethod.call(this),
+		if (!cssTransitionsSupported || thisStyle.WebkitTransition !== undefined) return originalPositionMethod.apply(this, arguments);
+
+		var position = originalPositionMethod.apply(this, arguments),
 			translation = getTranslation.call(this);
-			
+
 		return (position) ? {
 			left: position.left + translation.left,
 			top: position.top + translation.top
 		} : null;
 	};
-	
+
 	/**
 		@private
-		@name jQuery.position
+		@name jQuery.offset
 		@function
-		@description Extended position() method to include CSS3 translations
+		@description Extended offset() method to include CSS3 translations
 	*/
 	jQuery.fn.offset = function() {
 		if (!this[0]) {
 			return null;
 		}
-		
+
 		// bail out on Webkit otherwise we double up
-		if (!cssTransitionsSupported || thisStyle.WebkitTransition !== undefined) return originalOffsetMethod.call(this);
-		
-		var position = originalOffsetMethod.call(this),
+		if (!cssTransitionsSupported || thisStyle.WebkitTransition !== undefined) return originalOffsetMethod.apply(this, arguments);
+
+		var position = originalOffsetMethod.apply(this, arguments),
 			translation = getTranslation.call(this);
-			
+
 		return (position) ? {
 			left: position.left + translation.left,
 			top: position.top + translation.top
 		} : null;
 	};
-	
+
 })(jQuery, jQuery.fn.position, jQuery.fn.offset);
